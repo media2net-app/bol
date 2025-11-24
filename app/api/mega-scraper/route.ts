@@ -262,7 +262,7 @@ function parseAmazonProduct(
     }
 
     // Extract title - multiple methods
-    const titleMatch = html.match(/<span[^>]*id="productTitle"[^>]*>(.*?)<\/span>/s)
+    const titleMatch = html.match(/<span[^>]*id=["']productTitle["'][^>]*>([\s\S]*?)<\/span>/i)
     if (titleMatch) {
       let title = titleMatch[1].trim().replace(/\s+/g, ' ')
       // Remove HTML tags if any
@@ -369,7 +369,7 @@ function parseAmazonProduct(
 
     // Method 2: acrCustomerReviewLink
     if (!product.reviewCount) {
-      reviewCountMatch = html.match(/<a[^>]*id="acrCustomerReviewLink"[^>]*>.*?([\d.,]+)/s)
+      reviewCountMatch = html.match(/<a[^>]*id=["']acrCustomerReviewLink["'][^>]*>[\s\S]*?([\d.,]+)/i)
       if (reviewCountMatch) {
         product.reviewCount = parseInt(reviewCountMatch[1].replace(/[^\d]/g, ''))
       }
@@ -386,8 +386,8 @@ function parseAmazonProduct(
     // Extract main image - multiple methods (same as regular scraper and merchant scraper)
     
     // Method 1: Find the main product image container
-    const imageBlockMatch = html.match(/<div[^>]*id=["']imageBlock_feature_div["'][^>]*>(.*?)<\/div>/s) ||
-                           html.match(/<div[^>]*id=["']leftCol["'][^>]*>(.*?)<\/div>/s)
+    const imageBlockMatch = html.match(/<div[^>]*id=["']imageBlock_feature_div["'][^>]*>([\s\S]*?)<\/div>/i) ||
+                           html.match(/<div[^>]*id=["']leftCol["'][^>]*>([\s\S]*?)<\/div>/i)
     
     let imageBlockHtml = ''
     if (imageBlockMatch) {
@@ -465,22 +465,30 @@ function parseAmazonProduct(
     // These are the small images you click to see different views
     if (imageBlockHtml) {
       // Find thumbnail container - look for ul or div with thumbnail class
-      const thumbnailsMatch = imageBlockHtml.match(/<ul[^>]*class=["'][^"']*thumbnails?[^"']*["'][^>]*>(.*?)<\/ul>/is) ||
-                            imageBlockHtml.match(/<div[^>]*class=["'][^"']*thumbnails?[^"']*["'][^>]*>(.*?)<\/div>/is) ||
-                            imageBlockHtml.match(/<ul[^>]*id=["'][^"']*imageBlock_thumbnails[^"']*["'][^>]*>(.*?)<\/ul>/is)
-      
+      const thumbnailsMatch =
+        imageBlockHtml.match(/<ul[^>]*class=["'][^"']*thumbnails?[^"']*["'][^>]*>([\s\S]*?)<\/ul>/i) ||
+        imageBlockHtml.match(/<div[^>]*class=["'][^"']*thumbnails?[^"']*["'][^>]*>([\s\S]*?)<\/div>/i) ||
+        imageBlockHtml.match(/<ul[^>]*id=["'][^"']*imageBlock_thumbnails[^"']*["'][^>]*>([\s\S]*?)<\/ul>/i)
+
       if (thumbnailsMatch) {
         const thumbnailsHtml = thumbnailsMatch[1]
         // Extract images from thumbnails - these are the small preview images
-        const thumbMatches = thumbnailsHtml.matchAll(/<img[^>]*(?:src|data-src|data-old-src)=["']([^"']+)["']/g)
-        for (const match of thumbMatches) {
-          if (match[1]) {
-            const cleanUrl = match[1].split('?')[0]
-            if (cleanUrl.includes('amazon') && cleanUrl.includes('images') &&
-                !cleanUrl.includes('logo') && !cleanUrl.includes('banner') &&
-                !cleanUrl.includes('ad') && !cleanUrl.includes('sponsor') &&
-                !cleanUrl.includes('icon') && !cleanUrl.includes('badge') &&
-                !product.images.includes(cleanUrl)) {
+        const thumbRegex = /<img[^>]*(?:src|data-src|data-old-src)=["']([^"']+)["']/g
+        let thumbMatch: RegExpExecArray | null
+        while ((thumbMatch = thumbRegex.exec(thumbnailsHtml)) !== null) {
+          if (thumbMatch[1]) {
+            const cleanUrl = thumbMatch[1].split('?')[0]
+            if (
+              cleanUrl.includes('amazon') &&
+              cleanUrl.includes('images') &&
+              !cleanUrl.includes('logo') &&
+              !cleanUrl.includes('banner') &&
+              !cleanUrl.includes('ad') &&
+              !cleanUrl.includes('sponsor') &&
+              !cleanUrl.includes('icon') &&
+              !cleanUrl.includes('badge') &&
+              !product.images.includes(cleanUrl)
+            ) {
               product.images.push(cleanUrl)
             }
           }
@@ -491,15 +499,21 @@ function parseAmazonProduct(
     // Method 5: Extract from imageBlock using data-src (lazy loaded thumbnails)
     // Fallback if thumbnails container not found
     if (imageBlockHtml && product.images.length < 3) {
-      const dataSrcMatches = imageBlockHtml.matchAll(/data-src=["']([^"']+)["']/g)
-      for (const match of dataSrcMatches) {
-        if (match[1] && match[1].includes('amazon') && match[1].includes('images')) {
-          const cleanUrl = match[1].split('?')[0]
+      const dataSrcRegex = /data-src=["']([^"']+)["']/g
+      let dataSrcMatch: RegExpExecArray | null
+      while ((dataSrcMatch = dataSrcRegex.exec(imageBlockHtml)) !== null) {
+        if (dataSrcMatch[1] && dataSrcMatch[1].includes('amazon') && dataSrcMatch[1].includes('images')) {
+          const cleanUrl = dataSrcMatch[1].split('?')[0]
           // Filter out non-product images
-          if (!cleanUrl.includes('logo') && !cleanUrl.includes('banner') &&
-              !cleanUrl.includes('ad') && !cleanUrl.includes('sponsor') &&
-              !cleanUrl.includes('icon') && !cleanUrl.includes('badge') &&
-              !product.images.includes(cleanUrl)) {
+          if (
+            !cleanUrl.includes('logo') &&
+            !cleanUrl.includes('banner') &&
+            !cleanUrl.includes('ad') &&
+            !cleanUrl.includes('sponsor') &&
+            !cleanUrl.includes('icon') &&
+            !cleanUrl.includes('badge') &&
+            !product.images.includes(cleanUrl)
+          ) {
             product.images.push(cleanUrl)
           }
         }
