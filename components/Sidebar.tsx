@@ -31,12 +31,12 @@ import styles from './Sidebar.module.css'
 interface MenuItem {
   href: string
   label: string
-  icon: React.ComponentType<{ size?: number; className?: string }>
+  icon: React.ComponentType<{ size?: number | string; className?: string }>
   highlighted?: boolean
   subItems?: Array<{
     href: string
     label: string
-    icon: React.ComponentType<{ size?: number; className?: string }>
+    icon: React.ComponentType<{ size?: number | string; className?: string }>
   }>
 }
 
@@ -276,6 +276,7 @@ export default function Sidebar({
               (item.href !== '/dashboard' && pathname?.startsWith(item.href))
             const isHighlighted = item.highlighted || false
             const hasSubItems = item.subItems && item.subItems.length > 0
+            const subItems = item.subItems ?? []
             const isParentActive = hasSubItems && item.subItems?.some(subItem => pathname === subItem.href || pathname?.startsWith(subItem.href))
             
             return (
@@ -289,7 +290,7 @@ export default function Sidebar({
                 </Link>
                 {hasSubItems && (
                   <ul className={styles.subMenuList}>
-                    {item.subItems.map((subItem) => {
+                    {subItems.map((subItem) => {
                       const isSubActive = pathname === subItem.href || pathname?.startsWith(subItem.href)
                       return (
                         <li key={subItem.href}>
