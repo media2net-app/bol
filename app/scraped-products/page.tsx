@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { RefreshCw, Trash2, Edit2, ExternalLink, Image as ImageIcon, Download, Zap } from 'lucide-react'
+import JSZip from 'jszip'
 import styles from './page.module.css'
 
 interface ScrapedProduct {
@@ -176,43 +177,60 @@ export default function ScrapedProductsPage() {
     }
   }
 
-  const saveImagesToServer = async (ean: string, images: string[], productTitle: string | null) => {
+  const downloadImage = async (url: string): Promise<Blob> => {
     try {
-      addLog(`Afbeeldingen opslaan naar server...`, 'info')
-      addLog(`Map: Converted/${ean}`, 'info')
+      // Use image proxy if available, otherwise direct fetch
+      const proxyUrl = `/api/scraper/image-proxy?url=${encodeURIComponent(url)}`
+      const response = await fetch(proxyUrl)
       
-      const response = await fetch('/api/scraped-products/convert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ean,
-          images,
-          productTitle,
-        }),
-      })
-
-      const data = await response.json()
-
       if (!response.ok) {
-        throw new Error(data.error || data.message || 'Opslaan mislukt')
+        // Fallback to direct fetch if proxy fails
+        const directResponse = await fetch(url, { mode: 'cors' })
+        if (!directResponse.ok) {
+          throw new Error(`Failed to fetch image: ${directResponse.status}`)
+        }
+        return await directResponse.blob()
       }
-
-      addLog(`✓ ${data.data.savedImages.length} afbeeldingen opgeslagen`, 'success')
-      addLog(`Locatie: ${data.data.directory}`, 'success')
       
-      if (data.data.errors && data.data.errors.length > 0) {
-        data.data.errors.forEach((error: string) => {
-          addLog(`⚠ ${error}`, 'warning')
-        })
+      return await response.blob()
+    } catch (err) {
+      // Try direct fetch as fallback
+      try {
+        const response = await fetch(url, { mode: 'cors' })
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image: ${response.status}`)
+        }
+        return await response.blob()
+      } catch (fallbackErr) {
+        throw new Error(`Could not download image: ${url}`)
       }
-
-      return data.data
-    } catch (err: any) {
-      addLog(`Fout bij opslaan afbeeldingen: ${err.message}`, 'error')
-      throw err
     }
+  }
+
+  const addImagesToZip = async (zip: JSZip, ean: string, images: string[], productTitle: string | null) => {
+    const eanFolder = zip.folder(ean)
+    if (!eanFolder) {
+      throw new Error(`Could not create folder for EAN: ${ean}`)
+    }
+
+    addLog(`EAN ${ean}: ${images.length} afbeeldingen downloaden...`, 'info')
+
+    for (let i = 0; i < images.length; i++) {
+      const imageUrl = images[i]
+      try {
+        const blob = await downloadImage(imageUrl)
+        // Get file extension from URL or default to jpg
+        const urlParts = imageUrl.split('.')
+        const extension = urlParts.length > 1 ? urlParts[urlParts.length - 1].split('?')[0] : 'jpg'
+        const filename = `image_${i + 1}.${extension}`
+        eanFolder.file(filename, blob)
+        addLog(`  ✓ ${filename}`, 'success')
+      } catch (err: any) {
+        addLog(`  ⚠ Fout bij downloaden afbeelding ${i + 1}: ${err.message}`, 'warning')
+      }
+    }
+
+    addLog(`✓ EAN ${ean}: ${images.length} afbeeldingen toegevoegd aan ZIP`, 'success')
   }
 
   const handleConvertEan = async () => {
@@ -266,29 +284,37 @@ export default function ScrapedProductsPage() {
         }
       }
 
-      // Step 3: Save images to server in Converted/{EAN} structure
+      // Step 3: Create ZIP file with images
       if (selectedProduct.images && selectedProduct.images.length > 0) {
-        addLog(`Stap 3: ${selectedProduct.images.length} afbeeldingen opslaan...`, 'info')
-        addLog(`Map structuur: Converted/${customEan}`, 'info')
+        addLog(`Stap 3: ${selectedProduct.images.length} afbeeldingen toevoegen aan ZIP...`, 'info')
         
         try {
-          await saveImagesToServer(
-            customEan.trim(),
-            selectedProduct.images,
-            selectedProduct.title
-          )
-          addLog(`Stap 3 voltooid: Afbeeldingen opgeslagen in Converted/${customEan}`, 'success')
+          const zip = new JSZip()
+          await addImagesToZip(zip, customEan.trim(), selectedProduct.images, selectedProduct.title)
+          
+          // Generate and download ZIP file
+          addLog('ZIP-bestand genereren...', 'info')
+          const zipBlob = await zip.generateAsync({ type: 'blob' })
+          const url = URL.createObjectURL(zipBlob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = 'converted.zip'
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          URL.revokeObjectURL(url)
+          addLog(`Stap 3 voltooid: ZIP-bestand gedownload (converted.zip)`, 'success')
         } catch (err) {
           addLog(`Stap 3 mislukt: ${err instanceof Error ? err.message : 'Onbekende fout'}`, 'error')
         }
       } else {
-        addLog('Stap 3: Geen afbeeldingen beschikbaar om op te slaan', 'warning')
+        addLog('Stap 3: Geen afbeeldingen beschikbaar om toe te voegen', 'warning')
       }
 
       // Step 4: Finalize
       addLog('=== EAN Conversie Proces Voltooid ===', 'success')
       addLog(`Product heeft nu eigen EAN: ${customEan}`, 'success')
-      addLog(`Afbeeldingen opgeslagen in: Converted/${customEan}`, 'info')
+      addLog(`ZIP-bestand gedownload: converted.zip`, 'info')
       
       // Refresh products list
       fetchProducts()
@@ -363,6 +389,10 @@ export default function ScrapedProductsPage() {
       let successCount = 0
       let errorCount = 0
 
+      // Create ZIP file
+      const zip = new JSZip()
+      addLog('ZIP-bestand aanmaken...', 'info')
+
       for (let i = 0; i < productsToConvert.length; i++) {
         const product = productsToConvert[i]
         
@@ -400,18 +430,12 @@ export default function ScrapedProductsPage() {
             addLog(`✓ EAN toegewezen`, 'success')
           }
 
-          // Save images to server
+          // Add images to ZIP
           if (product.images && product.images.length > 0) {
-            addLog(`Afbeeldingen opslaan (${product.images.length})...`, 'info')
             try {
-              await saveImagesToServer(
-                customEan,
-                product.images,
-                product.title
-              )
-              addLog(`✓ Afbeeldingen opgeslagen in Converted/${customEan}`, 'success')
+              await addImagesToZip(zip, customEan, product.images, product.title)
             } catch (err: any) {
-              addLog(`⚠ Fout bij opslaan afbeeldingen: ${err.message}`, 'warning')
+              addLog(`⚠ Fout bij toevoegen afbeeldingen aan ZIP: ${err.message}`, 'warning')
             }
           } else {
             addLog(`⚠ Geen afbeeldingen beschikbaar`, 'warning')
@@ -422,6 +446,24 @@ export default function ScrapedProductsPage() {
           addLog(`✗ Fout: ${err.message}`, 'error')
           errorCount++
         }
+      }
+
+      // Generate and download ZIP file
+      addLog('\nZIP-bestand genereren...', 'info')
+      try {
+        const zipBlob = await zip.generateAsync({ type: 'blob' })
+        const url = URL.createObjectURL(zipBlob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'converted.zip'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+        addLog('✓ ZIP-bestand gedownload: converted.zip', 'success')
+      } catch (err: any) {
+        addLog(`✗ Fout bij genereren ZIP: ${err.message}`, 'error')
+        throw err
       }
 
       // Save updated products
