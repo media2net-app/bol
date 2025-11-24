@@ -1,0 +1,668 @@
+.container {
+  padding: 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.scrapeButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #ff6b00;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.scrapeButton:hover:not(:disabled) {
+  background-color: #e55a00;
+}
+
+.scrapeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveButton:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearButton:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.clearButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.logButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logButton:hover:not(:disabled) {
+  background-color: #e5e5e5;
+  border-color: #bbb;
+}
+
+.logButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.input {
+  padding: 12px 16px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff6b00;
+}
+
+.input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.helpText {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+.merchantSummary {
+  margin-top: 12px;
+  border: 1px solid #e1e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #f9fbff;
+}
+
+.merchantSummaryHeader {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0b63ce;
+  margin-bottom: 8px;
+}
+
+.merchantChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.merchantChip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background-color: #eef4ff;
+  color: #0b63ce;
+  font-size: 12px;
+  border: 1px solid transparent;
+}
+
+.activeMerchantChip {
+  background-color: #0b63ce;
+  color: #fff;
+  border-color: #0b63ce;
+  box-shadow: 0 4px 12px rgba(11, 99, 206, 0.25);
+}
+
+.progressContainer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.progressBar {
+  width: 100%;
+  height: 24px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b00, #ff8c42);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  text-align: center;
+}
+
+.progressMeta {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #333;
+  text-align: center;
+}
+
+.progressUrl {
+  color: #0b63ce;
+  word-break: break-all;
+}
+
+@media (max-width: 1280px) {
+  .container {
+    padding: 32px;
+  }
+
+  .headerButtons button {
+    flex: 1 1 calc(33% - 8px);
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .headerButtons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .headerButtons button {
+    flex: 1 1 calc(50% - 12px);
+    min-width: 180px;
+  }
+
+  .resultsContainer,
+  .card {
+    padding: 20px;
+  }
+
+  .logsPanel {
+    right: 16px;
+    width: 360px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .headerButtons {
+    gap: 10px;
+  }
+
+  .headerButtons button {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .categoriesSummary {
+    flex-direction: column;
+  }
+
+  .categoryBadge {
+    width: 100%;
+    text-align: center;
+  }
+
+  .imageContainer,
+  .noImage {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+  }
+
+  .dataTable th,
+  .dataTable td {
+    padding: 10px 12px;
+  }
+
+  .logsPanel {
+    width: calc(100% - 32px);
+    right: 16px;
+    left: 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  .container {
+    padding: 16px;
+  }
+
+  .card,
+  .resultsContainer {
+    padding: 16px;
+  }
+
+  .progressMeta {
+    font-size: 12px;
+  }
+
+  .merchantChips {
+    flex-direction: column;
+  }
+
+  .merchantChip {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.error {
+  padding: 12px;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 6px;
+  color: #c33;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.resultsContainer {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resultsContainer h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+.categoriesSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.categoryBadge {
+  padding: 8px 16px;
+  background-color: #f0f7ff;
+  border: 1px solid #0064cd;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0064cd;
+}
+
+.categorySection {
+  margin-bottom: 40px;
+}
+
+.categorySection:last-child {
+  margin-bottom: 0;
+}
+
+.categoryTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ff6b00;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.dataTable thead {
+  background-color: #f5f5f5;
+}
+
+.dataTable th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #1a1a1a;
+  border-bottom: 2px solid #ddd;
+  white-space: nowrap;
+}
+
+.dataTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.dataTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.imageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  padding: 4px;
+}
+
+.productThumbnail {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  display: block;
+}
+
+.noImage {
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.titleCell {
+  max-width: 400px;
+}
+
+.titleCell strong {
+  display: block;
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+.monoFont {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #666;
+}
+
+.reviewCount {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.link {
+  color: #0064cd;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Logs Panel */
+.logsPanel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 500px;
+  max-height: 400px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.logsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  background-color: #f5f5f5;
+}
+
+.logsHeader h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.logsClose {
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.logsClose:hover {
+  background-color: #e5e5e5;
+  color: #333;
+}
+
+.logsContent {
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 350px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+}
+
+.noLogs {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.logEntry {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  line-height: 1.5;
+}
+
+.logEntry:last-child {
+  border-bottom: none;
+}
+
+.logTime {
+  color: #999;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.logMessage {
+  color: #333;
+  flex: 1;
+}
+
+.logEntry.info .logMessage {
+  color: #0066cc;
+}
+
+.logEntry.success .logMessage {
+  color: #28a745;
+}
+
+.logEntry.error .logMessage {
+  color: #dc3545;
+}
+
+.logEntry.warning .logMessage {
+  color: #ffc107;
+}
+
