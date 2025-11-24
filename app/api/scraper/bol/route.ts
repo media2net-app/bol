@@ -553,7 +553,7 @@ function parseBolProduct(html: string, url: string, productId: string, pageData?
     }
 
     // Try to extract from window.__INITIAL_STATE__ or similar (fallback)
-    const initialStateMatch = html.match(/window\.__INITIAL_STATE__\s*=\s*({.*?});/s)
+    const initialStateMatch = html.match(/window\.__INITIAL_STATE__\s*=\s*({[\s\S]*?});/)
     if (initialStateMatch && !pageData) {
       try {
         const initialState = JSON.parse(initialStateMatch[1])
