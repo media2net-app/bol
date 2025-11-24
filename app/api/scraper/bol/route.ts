@@ -378,15 +378,20 @@ function parseBolProduct(html: string, url: string, productId: string, pageData?
     }
 
     // Extract images
-    const imageMatches = html.matchAll(/<img[^>]*src="([^"]+)"[^>]*data-test="product-image"/gi) ||
-                        html.matchAll(/<img[^>]*data-src="([^"]+)"[^>]*class="[^"]*product-image/gi) ||
-                        html.matchAll(/"imageUrl":\s*"([^"]+)"/g)
+    const imageRegexes = [
+      /<img[^>]*src="([^"]+)"[^>]*data-test="product-image"/gi,
+      /<img[^>]*data-src="([^"]+)"[^>]*class="[^"]*product-image/gi,
+      /"imageUrl":\s*"([^"]+)"/g,
+    ]
     const images: string[] = []
-    for (const match of imageMatches) {
-      if (match[1] && !match[1].includes('placeholder') && !match[1].includes('logo')) {
-        images.push(match[1])
+    imageRegexes.forEach((regex) => {
+      let match: RegExpExecArray | null
+      while ((match = regex.exec(html)) !== null) {
+        if (match[1] && !match[1].includes('placeholder') && !match[1].includes('logo')) {
+          images.push(match[1])
+        }
       }
-    }
+    })
     productInfo.images = images.slice(0, 10) // Max 10 images
 
     // Extract verkoopindicatoren - meerdere methoden proberen
