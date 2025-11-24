@@ -5,17 +5,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { email, password } = body
 
-    // Get API credentials from environment variables
-    const apiKey = process.env.API_KEY
-    const apiSecret = process.env.API_SECRET
-
-    if (!apiKey || !apiSecret) {
-      return NextResponse.json(
-        { error: 'API credentials not configured' },
-        { status: 500 }
-      )
-    }
-
     // Demo accounts (in production, validate against your API)
     const demoAccounts: Record<string, { password: string; role: 'scraper-only' | 'full-access' }> = {
       'davy@bol.com': { password: 'D@vyB0l!', role: 'scraper-only' },

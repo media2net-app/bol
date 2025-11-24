@@ -4,28 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
-import {
-  LayoutDashboard,
-  Globe,
-  Package,
-  Truck,
-  RotateCcw,
-  ShoppingBag,
-  Warehouse,
-  FileText,
-  DollarSign,
-  FileSearch,
-  Factory,
-  BarChart3,
-  Settings,
-  LogOut,
-  Barcode,
-  Zap,
-  Store,
-  Trophy,
-  TestTube,
-  X,
-} from 'lucide-react'
+import { Globe, LogOut, Barcode, Zap, Store, Trophy, X } from 'lucide-react'
 import styles from './Sidebar.module.css'
 
 interface MenuItem {
@@ -84,123 +63,7 @@ export default function Sidebar({
     router.push('/')
   }
 
-  const fullMenuItems: MenuItem[] = [
-    {
-      href: '/dashboard',
-      label: 'Dashboard',
-      icon: LayoutDashboard,
-    },
-    {
-      href: '/scraper',
-      label: 'Scraper',
-      icon: Globe,
-      highlighted: true,
-      subItems: [
-        {
-          href: '/scraped-products',
-          label: 'Scraped products (Eigen EAN)',
-          icon: Barcode,
-        },
-        {
-          href: '/mega-scraper',
-          label: 'MEGA Scraper',
-          icon: Zap,
-        },
-        {
-          href: '/merchant-scraper',
-          label: 'Merchant Scraper',
-          icon: Store,
-        },
-        {
-          href: '/ean-codes',
-          label: 'EAN codes',
-          icon: Barcode,
-        },
-      ],
-    },
-    {
-      href: '/search-bol-winners',
-      label: 'Search bol.com product winners',
-      icon: Trophy,
-    },
-    {
-      href: '/search-amazon-winners',
-      label: 'Search amazon.nl product winners',
-      icon: Trophy,
-    },
-    {
-      href: '/ean-codes',
-      label: 'EAN codes',
-      icon: Barcode,
-    },
-    {
-      href: '/bestellingen',
-      label: 'Bestellingen',
-      icon: Package,
-    },
-    {
-      href: '/verzendingen',
-      label: 'Verzendingen',
-      icon: Truck,
-    },
-    {
-      href: '/retouren',
-      label: 'Retouren',
-      icon: RotateCcw,
-    },
-    {
-      href: '/offers',
-      label: 'Offers (Producten)',
-      icon: ShoppingBag,
-    },
-    {
-      href: '/voorraad',
-      label: 'Voorraad',
-      icon: Warehouse,
-    },
-    {
-      href: '/facturen',
-      label: 'Facturen',
-      icon: FileText,
-    },
-    {
-      href: '/commissies',
-      label: 'Commissies',
-      icon: DollarSign,
-    },
-    {
-      href: '/producten',
-      label: 'Producten',
-      icon: FileSearch,
-    },
-    {
-      href: '/product-content',
-      label: 'Product Content',
-      icon: FileText,
-    },
-    {
-      href: '/logistiek',
-      label: 'Logistiek (FBB)',
-      icon: Factory,
-    },
-    {
-      href: '/statistieken',
-      label: 'Statistieken',
-      icon: BarChart3,
-    },
-    {
-      href: '/instellingen',
-      label: 'Instellingen',
-      icon: Settings,
-    },
-    {
-      href: '/api-test',
-      label: 'API Test',
-      icon: TestTube,
-    },
-  ]
-
-  const scraperOnlyMenu: MenuItem[] = [
+  const scraperMenu: MenuItem[] = [
     {
       href: '/scraper',
       label: 'Scraper',
@@ -236,7 +99,24 @@ export default function Sidebar({
     [userRole, userEmail]
   )
 
-  const menuItems = isScraperOnlyUser ? scraperOnlyMenu : fullMenuItems
+  const menuItems: MenuItem[] = isScraperOnlyUser ? scraperMenu : [
+    ...scraperMenu,
+    {
+      href: '/search-bol-winners',
+      label: 'Search bol.com product winners',
+      icon: Trophy,
+    },
+    {
+      href: '/search-amazon-winners',
+      label: 'Search amazon.nl product winners',
+      icon: Trophy,
+    },
+    {
+      href: '/ean-codes',
+      label: 'EAN codes',
+      icon: Barcode,
+    },
+  ]
   const sidebarClasses = [
     styles.sidebar,
     isMobile ? styles.sidebarMobile : '',
@@ -257,7 +137,7 @@ export default function Sidebar({
         </button>
       )}
       <div className={styles.logoSection}>
-        <Link href="/dashboard" className={styles.logoLink}>
+        <Link href="/scraper" className={styles.logoLink}>
           <Image
             src="/images/logo.svg"
             alt="bol.com logo"
