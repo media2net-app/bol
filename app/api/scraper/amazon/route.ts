@@ -632,7 +632,7 @@ function parseAmazonProduct(html: string, url: string, asin: string, pageData?: 
     }
 
     // Try to extract from JSON-LD structured data
-    const jsonLdMatch = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/is)
+    const jsonLdMatch = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/i)
     if (jsonLdMatch) {
       try {
         const jsonLd = JSON.parse(jsonLdMatch[1])
