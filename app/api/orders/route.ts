@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 
     try {
       // Check cache first
-      const cacheKey = { 'fulfilment-method': fulfilmentMethod, 'status': status }
+      const cacheKey: Record<string, string> = { 'fulfilment-method': fulfilmentMethod, status }
       if (changeInterval) {
         cacheKey['change-interval-minute'] = changeInterval
       }
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       // Try to use cached data as fallback
       if (error instanceof RateLimitError) {
-        const cacheKey = { 'fulfilment-method': fulfilmentMethod, 'status': status }
+        const cacheKey: Record<string, string> = { 'fulfilment-method': fulfilmentMethod, status }
         if (changeInterval) {
           cacheKey['change-interval-minute'] = changeInterval
         }
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       }
 
       // Try cached data for other errors too
-      const cacheKey = { 'fulfilment-method': fulfilmentMethod, 'status': status }
+      const cacheKey: Record<string, string> = { 'fulfilment-method': fulfilmentMethod, status }
       if (changeInterval) {
         cacheKey['change-interval-minute'] = changeInterval
       }
