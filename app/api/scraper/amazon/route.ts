@@ -575,23 +575,28 @@ function parseAmazonProduct(html: string, url: string, asin: string, pageData?: 
     }
 
     // Extract images
-    const imageMatches = html.matchAll(/<img[^>]*data-a-dynamic-image="([^"]+)"/gi) ||
-                        html.matchAll(/<img[^>]*id="landingImage"[^>]*src="([^"]+)"/gi)
+    const imageRegexes = [
+      /<img[^>]*data-a-dynamic-image="([^"]+)"/gi,
+      /<img[^>]*id="landingImage"[^>]*src="([^"]+)"/gi,
+    ]
     const images: string[] = []
-    for (const match of imageMatches) {
-      if (match[1] && !match[1].includes('placeholder')) {
-        try {
-          const imageData = JSON.parse(match[1].replace(/&quot;/g, '"'))
-          if (typeof imageData === 'object') {
-            Object.keys(imageData).forEach(key => images.push(key))
-          } else {
+    imageRegexes.forEach((regex) => {
+      let match: RegExpExecArray | null
+      while ((match = regex.exec(html)) !== null) {
+        if (match[1] && !match[1].includes('placeholder')) {
+          try {
+            const imageData = JSON.parse(match[1].replace(/&quot;/g, '"'))
+            if (typeof imageData === 'object') {
+              Object.keys(imageData).forEach((key) => images.push(key))
+            } else {
+              images.push(match[1])
+            }
+          } catch {
             images.push(match[1])
           }
-        } catch {
-          images.push(match[1])
         }
       }
-    }
+    })
     productInfo.images = images.slice(0, 10)
 
     // Extract verkoopindicatoren
