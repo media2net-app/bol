@@ -65,8 +65,35 @@ export default function ConditionalLayout({
     }
   }, [pathname, isLoginPage, router])
 
+  const demoOverlay = (
+    <div
+      className={styles.demoOverlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="demo-offline-title"
+    >
+      <div className={styles.demoModal}>
+        <span className={styles.demoBadge}>Demo</span>
+        <h2 id="demo-offline-title">Demo tijdelijk offline</h2>
+        <p>
+          Je kunt het volledige platform bekijken, maar functionaliteiten
+          uitvoeren is tijdelijk uitgeschakeld.
+        </p>
+        <p className={styles.demoSubText}>
+          Deze demo staat permanent in read-only modus tot we hem opnieuw
+          activeren.
+        </p>
+      </div>
+    </div>
+  )
+
   if (!showSidebar) {
-    return <>{children}</>
+    return (
+      <>
+        {children}
+        {demoOverlay}
+      </>
+    )
   }
 
   const mainClasses = [
@@ -77,35 +104,39 @@ export default function ConditionalLayout({
     .join(' ')
 
   return (
-    <div className={styles.appLayout}>
-      <Sidebar
-        isMobile={isMobile}
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
+    <>
+      <div className={styles.appLayout}>
+        <Sidebar
+          isMobile={isMobile}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
 
-      {isMobile && (
-        <>
-          <button
-            className={styles.mobileToggle}
-            onClick={() => setIsSidebarOpen((prev) => !prev)}
-            aria-label="Menu"
-          >
-            <Menu size={22} />
-          </button>
-          {isSidebarOpen && (
-            <div
-              className={styles.mobileBackdrop}
-              onClick={() => setIsSidebarOpen(false)}
-            />
-          )}
-        </>
-      )}
+        {isMobile && (
+          <>
+            <button
+              className={styles.mobileToggle}
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
+              aria-label="Menu"
+            >
+              <Menu size={22} />
+            </button>
+            {isSidebarOpen && (
+              <div
+                className={styles.mobileBackdrop}
+                onClick={() => setIsSidebarOpen(false)}
+              />
+            )}
+          </>
+        )}
 
-      <main className={mainClasses}>
-        {children}
-      </main>
-    </div>
+        <main className={mainClasses}>
+          {children}
+        </main>
+      </div>
+
+      {demoOverlay}
+    </>
   )
 }
 
