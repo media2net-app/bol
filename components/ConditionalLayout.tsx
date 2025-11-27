@@ -65,33 +65,10 @@ export default function ConditionalLayout({
     }
   }, [pathname, isLoginPage, router])
 
-  const demoOverlay = (
-    <div
-      className={styles.demoOverlay}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="demo-offline-title"
-    >
-      <div className={styles.demoModal}>
-        <span className={styles.demoBadge}>Demo</span>
-        <h2 id="demo-offline-title">Demo tijdelijk offline</h2>
-        <p>
-          Je kunt het volledige platform bekijken, maar functionaliteiten
-          uitvoeren is tijdelijk uitgeschakeld.
-        </p>
-        <p className={styles.demoSubText}>
-          Deze demo staat permanent in read-only modus tot we hem opnieuw
-          activeren.
-        </p>
-      </div>
-    </div>
-  )
-
   if (!showSidebar) {
     return (
       <>
         {children}
-        {demoOverlay}
       </>
     )
   }
@@ -134,8 +111,6 @@ export default function ConditionalLayout({
           {children}
         </main>
       </div>
-
-      {demoOverlay}
     </>
   )
 }
