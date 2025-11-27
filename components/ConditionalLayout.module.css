@@ -41,64 +41,6 @@
   z-index: 900;
 }
 
-.demoOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(6, 9, 20, 0.65);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 2000;
-}
-
-.demoModal {
-  max-width: 520px;
-  width: min(100%, 520px);
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(5, 9, 24, 0.35);
-  padding: 32px;
-  text-align: center;
-  color: #050c1f;
-}
-
-.demoModal h2 {
-  margin-top: 8px;
-  margin-bottom: 12px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0c1a3b;
-}
-
-.demoModal p {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: rgba(5, 12, 31, 0.8);
-}
-
-.demoSubText {
-  margin-top: 12px;
-  font-size: 0.85rem;
-  color: rgba(5, 12, 31, 0.6);
-}
-
-.demoBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: rgba(0, 100, 205, 0.15);
-  color: #0064cd;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
 @media (max-width: 1280px) {
   .mainContent {
     padding: 24px;
@@ -116,9 +58,5 @@
   .mainContentFull,
   .mainContent {
     padding: 72px 16px 20px;
-  }
-
-  .demoModal {
-    padding: 24px;
   }
 }
